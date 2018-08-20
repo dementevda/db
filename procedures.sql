@@ -11,17 +11,17 @@ create procedure proc1
 as
 	if not exists(select article from E4_product where article=@art)
 		begin
-			set @msg=('Данного товара не существует')
+			set @msg=('this product does not exist')
 			return
 		end;
 	if (@arrival<=(select date_arrival from E4_product where article=@art))
 		begin
-			set @msg='Дата прибытия не верна'
+			set @msg='date of arrival is not correct'
 			return
 		end;
 	if (exists (select certificate_quality from E4_product where certificate_quality=@cert) and ((select certificate_quality from E4_product where article=@art)!=@cert))	
 		begin
-			set @msg='Не верный сертификат качества'
+			set @msg='not a valid certificate of quality'
 			return 	
 		end;
 	if (@name is not null)	update E4_product set product_name=@name where article=@art
@@ -31,7 +31,7 @@ as
 			end
 	else
 			begin
-				set @msg='Количество товара не верно'
+				set @msg='quantity of goods is not correct'
 				return
 			end
 if (@name is not null)	update E4_product set product_name=@name where article=@art
@@ -42,7 +42,7 @@ if (@cert is not null) update E4_product set certificate_quality=@cert where art
 declare @printqu int
 set @printqu=(select quantity from E4_product where article=@art)
 set @name=(select product_name from E4_product where article=@art)
-set @msg='Количество '+@name+'(арт.'+cast (@art as varchar)+') = '+cast (@printqu as varchar)
+set @msg='quantity '+@name+'(art.'+cast (@art as varchar)+') = '+cast (@printqu as varchar)
 go
 
 /****** proc2  ******/
@@ -60,12 +60,12 @@ as
 	declare @test int = (select len(@str)-LEN(replace(@str,',','')))	
 if ((@test%2)!=0)
 	begin
-		set @msg='Не правильное количество параметров'
+		set @msg='not the correct number of parameters'
 		return
 	end
 if (@str like '%[A-z]%')
 	begin
-		set @msg='Нельзя вводить буквы'
+		set @msg='can not enter letters'
 		return
 	end
 declare @id int = SUBSTRING(@str, 1, @pos-1)
@@ -73,7 +73,7 @@ declare @id int = SUBSTRING(@str, 1, @pos-1)
 		set @pos = CHARINDEX(@parser,@str)
 if not exists (select ID from E1_Arendator where ID=@id)
 	begin
-		set @msg='Такого арендатора не существует'
+		set @msg='there is no such tenant'
 		return 
 	end
 declare @time int = SUBSTRING(@str, 1, @pos-1)
@@ -81,12 +81,12 @@ declare @time int = SUBSTRING(@str, 1, @pos-1)
 		set @pos = CHARINDEX(@parser,@str)
 if (@time<1)
 	begin
-		set @msg='Нельзя арендовать товар меньше чем на сутки'
+		set @msg='you can not rent less than a day'
 		return
 	end
 if (@pos=0)	
 	begin
-		set @msg='Нельзя арендовать товар меньше чем на сутки'
+		set @msg='you can not rent less than a day'
 		return
 	end	
 declare @test_of_prod int =0
@@ -100,17 +100,17 @@ while (@pos != 0)
 		set @pos = CHARINDEX(@parser,@str)
 		if not exists (select article from E4_product where article=@prod)
 			begin
-				raiserror ('Товара не существует',11,1)
+				raiserror ('goods does not exist',11,1)
 				continue
 			end
 		if ((select quantity from E4_product where article=@prod)<@count)
 			begin
-				raiserror ('Нужного количества нет на складе',11,1)
+				raiserror ('The required quantity is not in stock',11,1)
 				continue
 			end	
 		if ((select COUNT(product) from @t where product=@prod)>0)
 			begin
-				raiserror ('Данный твар уже был заказан',11,1)
+				raiserror ('This product has already been ordered',11,1)
 				continue
 			end
 		insert into @t values ((cast(@prod as int)),(cast(@count as int)))
@@ -118,7 +118,7 @@ while (@pos != 0)
 	end
 if (@test_of_prod=0)
 			begin
-				set @msg='Пустой заказ'
+				set @msg='empty order'
 				return
 			end
 insert into E7_doc_rent(cat_number,price_number,id,time_for_rent) values ((select cat_number from E1_Arendator where ID=@id),
@@ -135,7 +135,7 @@ while (@test!=0)
 
 declare @ndr int =(select MAX(number_rent_doc) from E7_doc_rent)
 declare @price money = (select sum(price) from E10_product_docrent where number_rent_doc=@ndr)
-set @msg='Сумма заказа №'+cast (@ndr as varchar)+' = '+cast (@price as varchar)
+set @msg='Order price №'+cast (@ndr as varchar)+' = '+cast (@price as varchar)
 go
 
 /****** proc3  ******/

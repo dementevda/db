@@ -21,19 +21,19 @@ begin
 						end
 					else
 						begin
-							raiserror ('Оплаченная сумма не верна',11,1)
+							raiserror ('the amount paid is not correct',11,1)
 							rollback transaction
 						end
 				end
 			else 
 				begin 
-					raiserror ('Такого документа об аренде не существует',11,1)
+					raiserror ('document does not exist',11,1)
 					rollback transaction
 				end
 		end
 	else
 		begin
-			raiserror ('Этот заказ уже оплачен',11,1)
+			raiserror ('this order is alredy paid',11,1)
 			rollback transaction
 		end
 end
@@ -71,13 +71,13 @@ set @interval=(select time_for_rent from E7_doc_rent where number_rent_doc=@ndr)
 								end
 							else
 								begin
-									raiserror ('Нужного количества нет на складе',11,1)
+									raiserror ('the required quantity is not in stock',11,1)
 									rollback transaction
 								end	
 		end
 	else
 		begin
-			raiserror ('Данный заказ уже оплачен',11,1)
+			raiserror ('this order is alredy paid',11,1)
 			rollback transaction
 		end
 go

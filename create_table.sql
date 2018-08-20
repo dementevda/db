@@ -64,7 +64,7 @@ firm_type varchar(5) not null,
 firm_name varchar(20) not null,
 license_number int not null,
 bank_account varchar(15) not null,
-check (firm_type in ('ŒŒŒ','Œ¿Œ','«¿Œ','œ¿Œ','‘¡√”')),
+check (firm_type in ('OOO','OAO','3AO')),
 )
 
 alter table E2_jur_person add constraint bank_only_num check (bank_account like '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]')
