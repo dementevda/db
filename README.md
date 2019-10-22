@@ -1,2 +1,3 @@
 # db_practice
-DB tasks
+MEPHI DB tasks
+Done in MSSQL
